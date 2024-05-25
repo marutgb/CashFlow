@@ -5,7 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -14,6 +17,7 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,6 +26,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.mgalexandrescu.cashflow.pages.Expenses
+import com.mgalexandrescu.cashflow.pages.Settings
 import com.mgalexandrescu.cashflow.ui.theme.CashFlowTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,40 +38,46 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val backStackEntry = navController.currentBackStackEntryAsState()
                 Scaffold(
+
                     bottomBar = {
                         NavigationBar {
-                            NavigationRailItem(
-                                selected = backStackEntry.value?.destination?.route == "expenses",
-                                onClick = { navController.navigate("expenses") },
-                                label= { Text("Expenses") },
-                                icon = { Icon(
-                                    painterResource(id = R.drawable.spendingsicon),
-                                    contentDescription = "spendings"
-                                ) })
-                            NavigationRailItem(
-                                selected = backStackEntry.value?.destination?.route == "reports",
-                                onClick = { navController.navigate("reports") },
-                                label= { Text("Reports") },
-                                icon = { Icon(
-                                    painterResource(id = R.drawable.reportsicon),
-                                    contentDescription = "reports"
-                                ) })
-                            NavigationRailItem(
-                                selected = backStackEntry.value?.destination?.route == "add",
-                                onClick = { navController.navigate("add") },
-                                label= { Text("Add") },
-                                icon = { Icon(
-                                    painterResource(id = R.drawable.addicon),
-                                    contentDescription = "add"
-                                ) })
-                            NavigationRailItem(
-                                selected = backStackEntry.value?.destination?.route == "settings",
-                                onClick = { navController.navigate("settings") },
-                                label= { Text("Settings") },
-                                icon = { Icon(
-                                    painterResource(id = R.drawable.settingsicon),
-                                    contentDescription = "settings"
-                                ) })
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                NavigationRailItem(
+                                    selected = backStackEntry.value?.destination?.route == "expenses",
+                                    onClick = { navController.navigate("expenses") },
+                                    label= { Text("Expenses") },
+                                    icon = { Icon(
+                                        painterResource(id = R.drawable.spendingsicon),
+                                        contentDescription = "spendings"
+                                    ) })
+                                NavigationRailItem(
+                                    selected = backStackEntry.value?.destination?.route == "reports",
+                                    onClick = { navController.navigate("reports") },
+                                    label= { Text("Reports") },
+                                    icon = { Icon(
+                                        painterResource(id = R.drawable.reportsicon),
+                                        contentDescription = "reports"
+                                    ) })
+                                NavigationRailItem(
+                                    selected = backStackEntry.value?.destination?.route == "add",
+                                    onClick = { navController.navigate("add") },
+                                    label= { Text("Add") },
+                                    icon = { Icon(
+                                        painterResource(id = R.drawable.addicon),
+                                        contentDescription = "add"
+                                    ) })
+                                NavigationRailItem(
+                                    selected = backStackEntry.value?.destination?.route == "settings",
+                                    onClick = { navController.navigate("settings") },
+                                    label= { Text("Settings") },
+                                    icon = { Icon(
+                                        painterResource(id = R.drawable.settingsicon),
+                                        contentDescription = "settings"
+                                    ) })
+                            }
                         }
                     },
                     content = { innerPadding ->
@@ -76,7 +88,7 @@ class MainActivity : ComponentActivity() {
                                         .fillMaxSize()
                                         .padding(innerPadding)
                                 }
-                                Greeting(name = "Expenses")
+                                Expenses(navController, name = "Expenses")
                             }
                             composable("reports"){
                                 Surface {
@@ -100,7 +112,15 @@ class MainActivity : ComponentActivity() {
                                         .fillMaxSize()
                                         .padding(innerPadding)
                                 }
-                                Greeting(name = "Settings")
+                                Settings(navController,name = "Settings")
+                            }
+                            composable("settings/categorie"){
+                                Surface {
+                                    var modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(innerPadding)
+                                }
+                                Greeting(name = "Categories")
                             }
                         }
                     }

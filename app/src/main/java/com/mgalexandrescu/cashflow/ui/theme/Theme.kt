@@ -13,17 +13,17 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = Primary,
     onPrimary = TextPrimary,
-    background = BackgroundDark,
+    background = Background,
     error = Destructive,
     onError = TextPrimary
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
-    onPrimary = TextPrimaryDark,
+    onPrimary = TextPrimary,
     background = Background,
     error = Destructive,
-    onError = TextPrimaryDark
+    onError = TextPrimary
 )
 
 @Composable
@@ -36,10 +36,10 @@ fun CashFlowTheme(
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) dynamicLightColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        darkTheme -> LightColorScheme
         else -> LightColorScheme
     }
 
