@@ -4,6 +4,7 @@ import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,26 +22,28 @@ import com.mgalexandrescu.cashflow.ui.theme.Typography
 @Composable
 fun TableRow(
     label: String,
-    onClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
     hasArrow: Boolean = false,
-    isDestructive: Boolean = false
+    isDestructive: Boolean = false,
+    content: (@Composable RowScope.() -> Unit)? = null
 ) {
     val textColor = if (isDestructive == true) Destructive else TextPrimary
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick(label) }
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = label, style = Typography.bodyMedium, color = textColor
+            text = label, style = Typography.bodyMedium, color = textColor, modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
         )
         if (hasArrow) {
             Icon(
                 painterResource(id = R.drawable.arrowright),
-                contentDescription = "Right arrow"
+                contentDescription = "Right arrow",
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
             )
+        }
+        if(content != null){
+            content()
         }
     }
 }

@@ -31,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.mgalexandrescu.cashflow.pages.Add
 import com.mgalexandrescu.cashflow.pages.Expenses
 import com.mgalexandrescu.cashflow.pages.Settings
 import com.mgalexandrescu.cashflow.ui.theme.Background
@@ -132,7 +133,7 @@ class MainActivity : ComponentActivity() {
                                         .fillMaxSize()
                                         .padding(innerPadding)
                                 }
-                                Greeting(name = "Add")
+                                Add(navController,name = "Add")
                             }
                             composable("settings"){
                                 Surface {
