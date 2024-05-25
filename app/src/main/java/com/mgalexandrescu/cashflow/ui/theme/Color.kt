@@ -6,6 +6,7 @@ val PrimaryHover = Color(0xFF0080E4)
 val Destructive = Color(0xFFFF453A)
 val TextSecondary = Color(0xFF727272)
 val Divider = Color(0x20008FFF)
+val ColumnDivider = Color(0xFFD6D3D3)
 val BackgroundElevated = Color(0xFFF2F2F2)
 val TopBarBackground = Color(0x5ED4ECFF)
 val TextPrimary= Color.Black
