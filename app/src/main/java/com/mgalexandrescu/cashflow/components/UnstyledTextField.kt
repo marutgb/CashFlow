@@ -46,7 +46,7 @@ fun UnstyledTextField(
     // If color is not provided via the text style, use content color as a default
     val textColor = TextPrimary
     val mergedTextStyle =
-        textStyle.merge(TextStyle(color = textColor))
+        textStyle.merge(TextStyle(color = TextSecondary))
 
     BasicTextField(value = value,
         onValueChange = onValueChange,
