@@ -13,7 +13,7 @@ data class AddScreenState(
     val note: String? = "",
     val category: String? = ""
 )
-class vm: ViewModel(){
+class AddViewModel: ViewModel(){
     private val _uiState = MutableStateFlow(AddScreenState(
         amount = "",
         recurrence = Recurrence.None,

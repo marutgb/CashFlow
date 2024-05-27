@@ -1,42 +1,58 @@
 package com.mgalexandrescu.cashflow.pages
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role.Companion.Button
-import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import com.mgalexandrescu.cashflow.components.TableRow
+import com.mgalexandrescu.cashflow.db
+import com.mgalexandrescu.cashflow.models.Category
+import com.mgalexandrescu.cashflow.models.Expense
 import com.mgalexandrescu.cashflow.ui.theme.BackgroundElevated
-import com.mgalexandrescu.cashflow.ui.theme.ColumnDivider
-import com.mgalexandrescu.cashflow.ui.theme.Divider
-import com.mgalexandrescu.cashflow.ui.theme.Primary
+import com.mgalexandrescu.cashflow.ui.theme.DividerColor
 import com.mgalexandrescu.cashflow.ui.theme.Shapes
-import com.mgalexandrescu.cashflow.ui.theme.TopBarBackground
+import com.mgalexandrescu.cashflow.ui.theme.TopAppBarBackground
+import io.realm.kotlin.ext.query
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(navController: NavController, name: String) {
+fun Settings(navController: NavController) {
+    val coroutineScope = rememberCoroutineScope()
+    var deleteConfirmationShowing by remember {
+        mutableStateOf(false)
+    }
+
+    val eraseAllData: () -> Unit = {
+        coroutineScope.launch {
+            db.write {
+                val expenses = this.query<Expense>().find()
+                val categories = this.query<Category>().find()
+
+                delete(expenses)
+                delete(categories)
+
+                deleteConfirmationShowing = false
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             MediumTopAppBar(
-                title = { Text("Settings") }, colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    titleContentColor = Primary,
-                    containerColor = TopBarBackground
+                title = { Text("Settings") },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = TopAppBarBackground
                 )
             )
         },
@@ -45,17 +61,45 @@ fun Settings(navController: NavController, name: String) {
                 Column(
                     modifier = Modifier
                         .padding(16.dp)
-                        .fillMaxWidth()
                         .clip(Shapes.large)
                         .background(BackgroundElevated)
+                        .fillMaxWidth()
                 ) {
-                    TableRow("Categories", hasArrow = true, modifier = Modifier.clickable {
-                            navController.navigate("settings/categories") }
+                    TableRow(
+                        label = "Categories",
+                        hasArrow = true,
+                        modifier = Modifier.clickable {
+                            navController.navigate("settings/categories")
+                        })
+                    Divider(
+                        modifier = Modifier
+                            .padding(start = 16.dp), thickness = 1.dp, color = DividerColor
                     )
-                    Divider(thickness = 1.dp, color = ColumnDivider)
-                    TableRow("Erase all data", isDestructive = true)
-                }
+                    TableRow(
+                        label = "Erase all data",
+                        isDestructive = true,
+                        modifier = Modifier.clickable {
+                            deleteConfirmationShowing = true
+                        })
 
+                    if (deleteConfirmationShowing) {
+                        AlertDialog(
+                            onDismissRequest = { deleteConfirmationShowing = false },
+                            title = { Text("Are you sure?") },
+                            text = { Text("This action cannot be undone.") },
+                            confirmButton = {
+                                TextButton(onClick = eraseAllData) {
+                                    Text("Delete everything")
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { deleteConfirmationShowing = false }) {
+                                    Text("Cancel")
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
     )

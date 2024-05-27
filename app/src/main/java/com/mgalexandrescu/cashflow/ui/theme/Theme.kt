@@ -1,52 +1,31 @@
 package com.mgalexandrescu.cashflow.ui.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
+private val DarkColorPalette = darkColorScheme(
     primary = Primary,
-    onPrimary = TextPrimary,
-    background = Background,
+    background = Surface,
+    surface = Surface,
     error = Destructive,
-    onError = TextPrimary
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Primary,
     onPrimary = TextPrimary,
-    background = Background,
-    error = Destructive,
-    onError = TextPrimary
+    onSecondary = TextPrimary,
+    onBackground = TextPrimary,
+    onSurface = TextPrimary,
+    onError = TextPrimary,
 )
 
 @Composable
 fun CashFlowTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicLightColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> LightColorScheme
-        else -> LightColorScheme
-    }
+    val colors = DarkColorPalette
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = colors,
         typography = Typography,
-        content = content,
-        shapes = Shapes
+        shapes = Shapes,
+        content = content
     )
 }

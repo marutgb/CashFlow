@@ -1,13 +1,15 @@
 package com.mgalexandrescu.cashflow.ui.theme
 
 import androidx.compose.ui.graphics.Color
-val Primary = Color(0xFF008FFF)
-val PrimaryHover = Color(0xFF0080E4)
+
+val Surface = Color.Black
+val TextPrimary = Color.White
 val Destructive = Color(0xFFFF453A)
-val TextSecondary = Color(0xFF727272)
-val Divider = Color(0x20008FFF)
-val ColumnDivider = Color(0xFFD6D3D3)
-val BackgroundElevated = Color(0xFFF2F2F2)
-val TopBarBackground = Color(0x5ED4ECFF)
-val TextPrimary= Color.Black
-val Background= Color.White
+val Primary = Color(0xFF0A84FF)
+
+val SystemGray04 = Color(0xFF3A3A3C)
+val BackgroundElevated = Color(0xFF1C1C1E)
+val LabelSecondary = Color(0xFF8E8E93)
+val DividerColor = Color(0x20787880)
+val TopAppBarBackground = Color(0x5E1D1D1D)
+val FillTertiary = Color(0x18767680)
