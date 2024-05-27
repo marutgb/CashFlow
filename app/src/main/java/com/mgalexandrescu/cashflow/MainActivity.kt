@@ -1,156 +1,157 @@
 package com.mgalexandrescu.cashflow
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.ui.Alignment
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.mgalexandrescu.cashflow.pages.Add
-import com.mgalexandrescu.cashflow.pages.Categories
-import com.mgalexandrescu.cashflow.pages.Expenses
-import com.mgalexandrescu.cashflow.pages.Settings
-import com.mgalexandrescu.cashflow.ui.theme.Background
 import com.mgalexandrescu.cashflow.ui.theme.CashFlowTheme
-import com.mgalexandrescu.cashflow.ui.theme.Primary
-import com.mgalexandrescu.cashflow.ui.theme.TextPrimary
+import com.mgalexandrescu.cashflow.ui.theme.TopAppBarBackground
+import com.mgalexandrescu.cashflow.pages.*
+import com.mgalexandrescu.cashflow.ui.theme.CashFlowTheme
+import com.mgalexandrescu.cashflow.ui.theme.TopAppBarBackground
+import io.sentry.compose.withSentryObservableEffect
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setContent {
             CashFlowTheme {
-                val navController = rememberNavController()
-                val backStackEntry = navController.currentBackStackEntryAsState()
-                Scaffold(
+                var showBottomBar by rememberSaveable { mutableStateOf(true) }
+                val navController = rememberNavController().withSentryObservableEffect()
+                val backStackEntry by navController.currentBackStackEntryAsState()
 
+                showBottomBar = when (backStackEntry?.destination?.route) {
+                    "settings/categories" -> false
+                    else -> true
+                }
+
+                Scaffold(
                     bottomBar = {
-                        NavigationBar(
-                            containerColor = Background
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                        if (showBottomBar) {
+                            NavigationBar(containerColor = TopAppBarBackground) {
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route == "expenses",
+                                    selected = backStackEntry?.destination?.route == "expenses",
                                     onClick = { navController.navigate("expenses") },
+                                    label = {
+                                        Text("Expenses")
+                                    },
                                     icon = {
                                         Icon(
-                                            painterResource(id = R.drawable.spendingsicon),
-                                            contentDescription = "spendings",
-                                            tint = if (backStackEntry.value?.destination?.route == "expenses") Primary else TextPrimary
+                                            painterResource(id = R.drawable.upload),
+                                            contentDescription = "Upload"
                                         )
-                                    },
-                                    label = { Text("Expenses") }
+                                    }
                                 )
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route == "reports",
+                                    selected = backStackEntry?.destination?.route == "reports",
                                     onClick = { navController.navigate("reports") },
+                                    label = {
+                                        Text("Reports")
+                                    },
                                     icon = {
                                         Icon(
-                                            painterResource(id = R.drawable.reportsicon),
-                                            contentDescription = "reports",
-                                            tint = if (backStackEntry.value?.destination?.route == "reports") Primary else TextPrimary
+                                            painterResource(id = R.drawable.bar_chart),
+                                            contentDescription = "Reports"
                                         )
-                                    },
-                                    label = { Text("Reports") }
+                                    }
                                 )
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route == "add",
+                                    selected = backStackEntry?.destination?.route == "add",
                                     onClick = { navController.navigate("add") },
+                                    label = {
+                                        Text("Add")
+                                    },
                                     icon = {
                                         Icon(
-                                            painterResource(id = R.drawable.addicon),
-                                            contentDescription = "add",
-                                            tint = if (backStackEntry.value?.destination?.route == "add") Primary else TextPrimary
+                                            painterResource(id = R.drawable.add),
+                                            contentDescription = "Add"
                                         )
-                                    },
-                                    label = { Text("Add") }
+                                    }
                                 )
                                 NavigationBarItem(
-                                    selected = backStackEntry.value?.destination?.route?.startsWith("settings") ?: false,
+                                    selected = backStackEntry?.destination?.route?.startsWith("settings")
+                                        ?: false,
                                     onClick = { navController.navigate("settings") },
+                                    label = {
+                                        Text("Settings")
+                                    },
                                     icon = {
                                         Icon(
-                                            painterResource(id = R.drawable.settingsicon),
-                                            contentDescription = "settings",
-                                            tint = if (backStackEntry.value?.destination?.route?.startsWith("settings") ?: false) Primary else TextPrimary
+                                            painterResource(id = R.drawable.settings_outlined),
+                                            contentDescription = "Settings"
                                         )
-                                    },
-                                    label = { Text("Settings") }
+                                    }
                                 )
                             }
                         }
-                    }
-,
+                    },
                     content = { innerPadding ->
-                        NavHost(navController = navController, startDestination = "expenses") {
-                            composable("expenses"){
-                                Surface {
-                                    var modifier = Modifier
+                        NavHost(
+                            navController = navController,
+                            startDestination = "expenses"
+                        ) {
+                            composable("expenses") {
+                                Surface(
+                                    modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(innerPadding)
+                                        .padding(innerPadding),
+                                ) {
+                                    Expenses(navController)
                                 }
-                                Expenses(navController, name = "Expenses")
                             }
-                            composable("reports"){
-                                Surface {
-                                    var modifier = Modifier
+                            composable("reports") {
+                                Surface(
+                                    modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(innerPadding)
+                                        .padding(innerPadding),
+                                ) {
+                                    Reports()
                                 }
-                                Greeting(name = "Reports")
                             }
-                            composable("add"){
-                                Surface {
-                                    var modifier = Modifier
+                            composable("add") {
+                                Surface(
+                                    modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(innerPadding)
+                                        .padding(innerPadding),
+                                ) {
+                                    Add(navController)
                                 }
-                                Add(navController)
                             }
-                            composable("settings"){
-                                Surface {
-                                    var modifier = Modifier
+                            composable("settings") {
+                                Surface(
+                                    modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(innerPadding)
+                                        .padding(innerPadding),
+                                ) {
+                                    Settings(navController)
                                 }
-                                Settings(navController,name = "Settings")
                             }
-                            composable("settings/categories"){
-                                Surface {
-                                    var modifier = Modifier
+                            composable("settings/categories") {
+                                Surface(
+                                    modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(innerPadding)
+                                        .padding(innerPadding),
+                                ) {
+                                    Categories(navController)
                                 }
-                                Categories(navController)
                             }
                         }
                     }
@@ -161,17 +162,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun Greeting(name: String) {
+    Text(text = "Hello $name!")
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun GreetingPreview() {
+fun DefaultPreview() {
     CashFlowTheme {
-        Greeting("Marian")
+        Surface {
+            Greeting("Android")
+        }
     }
 }
