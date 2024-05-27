@@ -16,83 +16,81 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.mgalexandrescu.cashflow.ui.theme.Primary
 import com.mgalexandrescu.cashflow.ui.theme.TextPrimary
-import com.mgalexandrescu.cashflow.ui.theme.TextSecondary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UnstyledTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    readOnly: Boolean = false,
-    textStyle: TextStyle = LocalTextStyle.current,
-    label: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)? = null,
-    arrangement: Arrangement.Horizontal = Arrangement.Start,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    supportingText: @Composable (() -> Unit)? = null,
-    isError: Boolean = false,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    singleLine: Boolean = false,
-    maxLines: Int = Int.MAX_VALUE,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = TextFieldDefaults.filledShape,
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors()
+  value: String,
+  onValueChange: (String) -> Unit,
+  modifier: Modifier = Modifier,
+  enabled: Boolean = true,
+  readOnly: Boolean = false,
+  textStyle: TextStyle = LocalTextStyle.current,
+  label: @Composable (() -> Unit)? = null,
+  placeholder: @Composable (() -> Unit)? = null,
+  arrangement: Arrangement.Horizontal = Arrangement.Start,
+  leadingIcon: @Composable (() -> Unit)? = null,
+  trailingIcon: @Composable (() -> Unit)? = null,
+  supportingText: @Composable (() -> Unit)? = null,
+  isError: Boolean = false,
+  visualTransformation: VisualTransformation = VisualTransformation.None,
+  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  keyboardActions: KeyboardActions = KeyboardActions.Default,
+  singleLine: Boolean = false,
+  maxLines: Int = Int.MAX_VALUE,
+  interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+  shape: Shape = TextFieldDefaults.filledShape,
+  colors: TextFieldColors = TextFieldDefaults.textFieldColors()
 ) {
-    // If color is not provided via the text style, use content color as a default
-    val textColor = TextPrimary
-    val mergedTextStyle =
-        textStyle.merge(TextStyle(color = TextSecondary))
+  // If color is not provided via the text style, use content color as a default
+  val textColor = TextPrimary
+  val mergedTextStyle =
+    textStyle.merge(TextStyle(color = textColor))
 
-    BasicTextField(value = value,
-        onValueChange = onValueChange,
-        enabled = enabled,
-        readOnly = readOnly,
-        textStyle = mergedTextStyle,
-        cursorBrush = SolidColor(Primary),
+  BasicTextField(value = value,
+    onValueChange = onValueChange,
+    enabled = enabled,
+    readOnly = readOnly,
+    textStyle = mergedTextStyle,
+    cursorBrush = SolidColor(Primary),
+    visualTransformation = visualTransformation,
+    keyboardOptions = keyboardOptions,
+    keyboardActions = keyboardActions,
+    interactionSource = interactionSource,
+    singleLine = singleLine,
+    maxLines = maxLines,
+    decorationBox = @Composable { innerTextField ->
+      TextFieldDefaults.TextFieldDecorationBox(
+        value = value,
         visualTransformation = visualTransformation,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        interactionSource = interactionSource,
+        innerTextField = innerTextField,
+        placeholder = {
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = arrangement,
+            verticalAlignment = CenterVertically
+          ) {
+            placeholder?.invoke()
+          }
+        },
+        label = label,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        supportingText = supportingText,
+        shape = shape,
         singleLine = singleLine,
-        maxLines = maxLines,
-        decorationBox = @Composable { innerTextField ->
-            TextFieldDefaults.TextFieldDecorationBox(
-                value = value,
-                visualTransformation = visualTransformation,
-                innerTextField = innerTextField,
-                placeholder = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = arrangement,
-                        verticalAlignment = CenterVertically
-                    ) {
-                        placeholder?.invoke()
-                    }
-                },
-                label = label,
-                leadingIcon = leadingIcon,
-                trailingIcon = trailingIcon,
-                supportingText = supportingText,
-                shape = shape,
-                singleLine = singleLine,
-                enabled = enabled,
-                isError = isError,
-                interactionSource = interactionSource,
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    cursorColor = Primary,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-            )
-        })
+        enabled = enabled,
+        isError = isError,
+        interactionSource = interactionSource,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        colors = TextFieldDefaults.textFieldColors(
+          containerColor = Color.Transparent,
+          textColor = TextPrimary,
+          cursorColor = Primary,
+          focusedIndicatorColor = Color.Transparent,
+          unfocusedIndicatorColor = Color.Transparent,
+          disabledIndicatorColor = Color.Transparent,
+        ),
+      )
+    })
 }
